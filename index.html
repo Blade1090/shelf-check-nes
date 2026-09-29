@@ -1,0 +1,8 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#c4141c"><title>Shelf Check — NES</title><link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="styles.css"></head><body>
+<header><div class="brand"><span class="pixel">SHELF CHECK</span><strong>NES</strong></div><div class="tag">Matty's collection test build</div></header>
+<main>
+<section class="hero"><div><p class="eyebrow">NORTH AMERICAN CORE SET</p><h1><span id="ownedCount">0</span><i>/</i><span id="totalCount">816</span></h1><p id="pct">0.0%</p></div><div class="meter"><div id="barFill"></div></div><p id="importStatus"></p></section>
+<section class="import"><label class="fileButton">IMPORT GAMEEYE CSV<input id="file" type="file" accept=".csv,text/csv"></label><button id="reset">CLEAR LOCAL IMPORT</button><details><summary>Import audit</summary><pre id="details">Import Matty's GameEye file to test ownership matching.</pre></details></section>
+<section class="controls"><input id="search" placeholder="Search NES games…"><div class="filters"><button class="active" data-filter="ALL">ALL</button><button data-filter="OWNED">OWNED</button><button data-filter="NEEDED">NEEDED</button></div></section>
+<section id="gameList" class="games"></section>
+</main><footer>Standalone NES test build • separate storage/cache namespace • no PS4 data</footer><script type="module" src="app.js"></script></body></html>
