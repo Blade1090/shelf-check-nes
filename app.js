@@ -1,10 +1,11 @@
 import { importGameEye } from './import-core.mjs';
+const COVER_BASE='https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_Entertainment_System/4d21463bf5d553afc34d99183c9ad5833f773b93/Named_Boxarts/';
 const DATA = await Promise.all([
   fetch('./nes-census.json').then(r=>r.json()),
   fetch('./nes-tracked-non-core.json').then(r=>r.json()),
   fetch('./pricecharting-unmapped.json').then(r=>r.json()),
   fetch('./pricecharting-alias-map.json').then(r=>r.json()),
-  fetch('./covers-001-010.json').then(r=>r.json()).catch(()=>({}))
+  fetch('./covers-001-100.json').then(r=>r.json()).catch(()=>({}))
 ]).then(([census,tracked,pcu,pcAlias,covers])=>({census,tracked,pcu,pcAlias,covers}));
 
 const STORAGE='shelfcheck-nes-matty-v1';
@@ -13,6 +14,12 @@ const allIds=Object.values(DATA.census.identities).flat();
 let state={owned:new Set(), imported:false, summary:null, filter:'ALL', q:''};
 try{const saved=JSON.parse(localStorage.getItem(STORAGE)||'null');if(saved){state.owned=new Set(saved.owned||[]);state.imported=!!saved.imported;state.summary=saved.summary||null;}}catch{}
 function save(){localStorage.setItem(STORAGE,JSON.stringify({owned:[...state.owned],imported:state.imported,summary:state.summary}));}
+function coverInfo(id){
+  const row=DATA.covers[id];
+  if(!row)return null;
+  if(Array.isArray(row))return {u:row[0].startsWith('http')?row[0]:COVER_BASE+row[0],l:row[1]||null};
+  return row;
+}
 function render(){
   const owned=state.owned.size,total=allIds.length,pct=(owned/total*100).toFixed(1);
   el('ownedCount').textContent=owned; el('totalCount').textContent=total; el('pct').textContent=pct+'%'; el('barFill').style.width=pct+'%';
@@ -23,7 +30,7 @@ function render(){
   el('gameList').innerHTML=list.slice(0,500).map(x=>{
     const o=state.owned.has(x.identity_id);
     const name=x.canonical_title+(x.display_disambiguator?` ${x.display_disambiguator}`:'');
-    const cover=DATA.covers[x.identity_id];
+    const cover=coverInfo(x.identity_id);
     const art=cover?.u?`<button class="cover-button" type="button" data-cover="${escapeHTML(cover.u)}" data-title="${escapeHTML(name)}" aria-label="Enlarge ${escapeHTML(name)} cover"><img class="cover" src="${escapeHTML(cover.u)}" alt="${escapeHTML(name)} NES box art" loading="lazy"></button>`:`<div class="cover cover-missing" aria-hidden="true"><span>NES</span></div>`;
     const label=cover?.l?`<em class="product-note">${escapeHTML(cover.l)}</em>`:'';
     return `<article class="game ${o?'owned':''}">${art}<div class="game-copy"><strong>${escapeHTML(name)}</strong><small>${x.license_class==='UNLICENSED'?'UNLICENSED • ':''}${x.availability.replaceAll('_',' ')}</small>${label}</div><span class="status">${o?'OWNED':'NEEDED'}</span></article>`;
