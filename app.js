@@ -33,12 +33,21 @@ function coverInfo(id){
   return row;
 }
 function titleFor(x){return x.canonical_title+(x.display_disambiguator?` ${x.display_disambiguator}`:'');}
+function az(a,b){return titleFor(a).localeCompare(titleFor(b),undefined,{numeric:true,sensitivity:'base'});}
 function sortList(list){
-  const az=(a,b)=>titleFor(a).localeCompare(titleFor(b),undefined,{numeric:true,sensitivity:'base'});
   if(state.sort==='TITLE_DESC')return list.sort((a,b)=>-az(a,b));
   if(state.sort==='OWNED_FIRST')return list.sort((a,b)=>(Number(state.owned.has(b.identity_id))-Number(state.owned.has(a.identity_id)))||az(a,b));
   if(state.sort==='NEEDED_FIRST')return list.sort((a,b)=>(Number(state.owned.has(a.identity_id))-Number(state.owned.has(b.identity_id)))||az(a,b));
   return list.sort(az);
+}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function cardHTML(x,forceOwned=false){
+  const o=forceOwned||state.owned.has(x.identity_id);
+  const name=titleFor(x);
+  const cover=coverInfo(x.identity_id);
+  const art=cover?.u?`<button class="cover-button" type="button" data-cover="${escapeHTML(cover.u)}" data-title="${escapeHTML(name)}" aria-label="Enlarge ${escapeHTML(name)} cover"><img class="cover" src="${escapeHTML(cover.u)}" alt="${escapeHTML(name)} NES box art" loading="lazy" decoding="async"></button>`:`<div class="cover cover-missing" aria-hidden="true"><span>NES</span></div>`;
+  const label=cover?.l?`<em class="product-note">${escapeHTML(cover.l)}</em>`:'';
+  return `<article class="game ${o?'owned':''}">${art}<div class="game-copy"><strong>${escapeHTML(name)}</strong><small>${x.license_class==='UNLICENSED'?'UNLICENSED • ':''}${x.availability.replaceAll('_',' ')}</small>${label}</div><span class="status">${o?'OWNED':'NEEDED'}</span></article>`;
 }
 function render(){
   const owned=state.owned.size,total=allIds.length,pct=(owned/total*100).toFixed(1);
@@ -49,20 +58,24 @@ function render(){
   if(el('sort'))el('sort').value=state.sort;
   let list=allIds.filter(x=>{const o=state.owned.has(x.identity_id);if(state.filter==='OWNED'&&!o)return false;if(state.filter==='NEEDED'&&o)return false;const q=state.q.trim().toLowerCase();return !q||x.canonical_title.toLowerCase().includes(q)||(x.aliases||[]).some(a=>a.toLowerCase().includes(q));});
   list=sortList(list);
-  el('gameList').innerHTML=list.slice(0,500).map(x=>{
-    const o=state.owned.has(x.identity_id);
-    const name=titleFor(x);
-    const cover=coverInfo(x.identity_id);
-    const art=cover?.u?`<button class="cover-button" type="button" data-cover="${escapeHTML(cover.u)}" data-title="${escapeHTML(name)}" aria-label="Enlarge ${escapeHTML(name)} cover"><img class="cover" src="${escapeHTML(cover.u)}" alt="${escapeHTML(name)} NES box art" loading="lazy" decoding="async"></button>`:`<div class="cover cover-missing" aria-hidden="true"><span>NES</span></div>`;
-    const label=cover?.l?`<em class="product-note">${escapeHTML(cover.l)}</em>`:'';
-    return `<article class="game ${o?'owned':''}">${art}<div class="game-copy"><strong>${escapeHTML(name)}</strong><small>${x.license_class==='UNLICENSED'?'UNLICENSED • ':''}${x.availability.replaceAll('_',' ')}</small>${label}</div><span class="status">${o?'OWNED':'NEEDED'}</span></article>`;
-  }).join('')+(list.length>500?`<p class="limit">Showing first 500 of ${list.length} matches.</p>`:'');
+  el('gameList').innerHTML=list.slice(0,500).map(x=>cardHTML(x)).join('')+(list.length>500?`<p class="limit">Showing first 500 of ${list.length} matches.</p>`:'');
 }
-function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function renderMyShelf(){
+  const total=allIds.length,owned=state.owned.size,remaining=total-owned,pct=(owned/total*100).toFixed(1);
+  el('shelfOwned').textContent=owned;
+  el('shelfRemaining').textContent=remaining;
+  el('shelfPct').textContent=pct+'%';
+  el('shelfBar').style.width=pct+'%';
+  const q=(el('shelfSearch')?.value||'').trim().toLowerCase();
+  const ownedGames=allIds.filter(x=>state.owned.has(x.identity_id)).filter(x=>!q||x.canonical_title.toLowerCase().includes(q)||(x.aliases||[]).some(a=>a.toLowerCase().includes(q))).sort(az);
+  el('shelfList').innerHTML=ownedGames.length?ownedGames.map(x=>cardHTML(x,true)).join(''):`<div class="shelf-empty">${state.imported?'No owned games match that search.':'Import Matty\'s GameEye CSV first and his shelf will appear here.'}</div>`;
+}
 el('file').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;const result=importGameEye(await f.text(),DATA);state.owned=new Set(result.owned_core_identities.map(x=>x.identity_id));state.imported=true;state.summary=result.summary;save();render();});
 el('search').addEventListener('input',e=>{state.q=e.target.value;render();});
 if(el('sort'))el('sort').addEventListener('change',e=>{state.sort=e.target.value;save();render();});
 for(const b of document.querySelectorAll('[data-filter]')) b.addEventListener('click',()=>{state.filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x===b));render();});
+el('myShelfBtn')?.addEventListener('click',()=>{el('shelfSearch').value='';renderMyShelf();el('myShelfDialog').showModal();});
+el('shelfSearch')?.addEventListener('input',renderMyShelf);
 el('reset').addEventListener('click',()=>{if(confirm('Clear the local NES ownership import on this device?')){localStorage.removeItem(STORAGE);state={owned:new Set(),imported:false,summary:null,filter:'ALL',q:'',sort:'TITLE_ASC'};el('search').value='';if(el('sort'))el('sort').value='TITLE_ASC';document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x.dataset.filter==='ALL'));if(el('details'))el('details').textContent='Import Matty\'s GameEye file to test ownership matching.';render();}});
 document.addEventListener('click',e=>{const b=e.target.closest('.cover-button');if(!b)return;const d=el('coverDialog');el('coverDialogImg').src=b.dataset.cover;el('coverDialogImg').alt=`${b.dataset.title} NES box art`;el('coverDialogTitle').textContent=b.dataset.title;d.showModal();});
 render();
