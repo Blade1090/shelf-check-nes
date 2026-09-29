@@ -1,9 +1,9 @@
 import { importGameEye } from './import-core.mjs';
 const DATA = await Promise.all([
-  fetch('./data/nes-census.json').then(r=>r.json()),
-  fetch('./data/nes-tracked-non-core.json').then(r=>r.json()),
-  fetch('./data/pricecharting-unmapped.json').then(r=>r.json()),
-  fetch('./data/pricecharting-alias-map.json').then(r=>r.json())
+  fetch('./nes-census.json').then(r=>r.json()),
+  fetch('./nes-tracked-non-core.json').then(r=>r.json()),
+  fetch('./pricecharting-unmapped.json').then(r=>r.json()),
+  fetch('./pricecharting-alias-map.json').then(r=>r.json())
 ]).then(([census,tracked,pcu,pcAlias])=>({census,tracked,pcu,pcAlias}));
 
 const STORAGE='shelfcheck-nes-matty-v1';
