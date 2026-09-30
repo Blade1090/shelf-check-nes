@@ -23,6 +23,7 @@ jobs:
           node --check dossier.js
           node --check collection-tools-v2.js
           node --check collection-legacy-shim.js
+          node --check quickmark-hotfix.js
           node --check wishlist-buy.js
           node --check wishlist-parity.js
           node --check backup-restore.js
