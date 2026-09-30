@@ -30,19 +30,22 @@ function dRender(id){
   const summary=d?.summary||dFallbackQuick(x),year=d?.release_year||x.na_release_year,publisher=d?.publisher||x.publisher_na,developer=d?.developer||x.developer,license=d?.license_class||x.license_class,genres=d?.genres||[],players=d?.players||'—';
   const notes=dNotes(d,x,c),mainTime=d?.hltb_main_hours!=null?` · ~${dHours(d.hltb_main_hours)} main`:'';
   const priceGuide=p?`<div class="dossier-times"><div><small>STRONG BUY</small><b>${dMoney(p.price*.5)}</b></div><div><small>TARGET</small><b>${dMoney(p.price*.75)}</b></div><div><small>LOOSE MARKET</small><b>${dMoney(p.price)}</b></div></div>`:`<p class="dossier-pending">No reliable loose-market snapshot for this identity yet.</p>`;
-  const storeLine=p?`LOOSE ${dMoney(p.price)}${mainTime}`:`LOOSE PRICE PENDING${mainTime}`;
+  const storeLine=p?`Loose ${dMoney(p.price)}${mainTime}`:`Loose price pending${mainTime}`;
   body.innerHTML=`
-    <section class="dossier-hero">
-      <div class="dossier-cover-wrap">${c?.u?`<img src="${dEsc(c.u)}" alt="${dEsc(dTitle(x))} NES box art">`:'<div class="dossier-cover-missing">NES</div>'}</div>
-      <div>
-        <div class="dossier-title-row"><div><h3>${dEsc(dTitle(x))}</h3><div class="dossier-meta">${year||'Year unknown'} · ${dEsc(publisher||'Publisher unknown')} · ${dEsc(developer||'Developer unknown')}</div></div><span class="dossier-badge ${owned?'owned':''}">${owned?'OWNED':'NEEDED'}</span></div>
-        <div class="dossier-actions">${owned?'':`<button class="dossier-wish ${wish?'active':''}" data-dossier-wish="${dEsc(id)}">${wish?'♥ ON WISHLIST':'♡ ADD TO WISHLIST'}</button>`}${d?`<span class="dossier-confidence ${String(d.confidence||'').toLowerCase()}">${dEsc(d.confidence||'')} RESEARCH</span>`:''}</div>
-      </div>
+    <section class="dossier-card">
+      <section class="dossier-hero">
+        <div class="dossier-cover-wrap">${c?.u?`<img src="${dEsc(c.u)}" alt="${dEsc(dTitle(x))} NES box art">`:'<div class="dossier-cover-missing">NES</div>'}</div>
+        <div class="dossier-identity">
+          <div class="dossier-title-row"><div><h3>${dEsc(dTitle(x))}</h3><div class="dossier-meta">${year||'Year unknown'} · ${dEsc(publisher||'Publisher unknown')} · ${dEsc(developer||'Developer unknown')}</div></div><span class="dossier-badge ${owned?'owned':''}">${owned?'OWNED':'NEEDED'}</span></div>
+          <div class="dossier-actions">${owned?'':`<button class="dossier-wish ${wish?'active':''}" data-dossier-wish="${dEsc(id)}">${wish?'♥ ON WISHLIST':'♡ ADD TO WISHLIST'}</button>`}</div>
+        </div>
+      </section>
+      <section class="dossier-store">
+        <div class="dossier-store-head"><h3>Store Mode</h3><p>${dEsc(storeLine)}</p></div>
+        ${p?`<div class="dossier-store-form"><label class="dossier-store-input"><span>$</span><input id="dossierAsk" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Store price"></label><button id="dossierCheck" class="dossier-check-btn" type="button">SHOULD I BUY IT?</button></div><div id="dossierVerdict" class="dossier-verdict">${owned?'Already owned — another copy is a duplicate unless Matty wants a variant/condition upgrade.':'Enter the store price, then check it.'}</div>`:`<div class="dossier-verdict">No reliable loose-market snapshot for this identity yet.</div>`}
+      </section>
     </section>
-    <section class="dossier-store">
-      <div class="dossier-store-head"><small>STORE MODE</small><strong>${dEsc(storeLine)}</strong></div>
-      ${p?`<div class="dossier-store-form"><label class="dossier-store-input"><span>$</span><input id="dossierAsk" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Store price"></label><button id="dossierCheck" class="dossier-check-btn" type="button">SHOULD I BUY IT?</button></div><div id="dossierVerdict" class="dossier-verdict">${owned?'Already owned — another copy is a duplicate unless Matty wants a variant/condition upgrade.':'Enter the store price, then check it.'}</div>`:`<div class="dossier-verdict">No reliable loose-market snapshot for this identity yet.</div>`}
-    </section>
+    <section class="dossier-research-head"><div><small>MATTY'S SET · NES</small><h3>NES DOSSIER</h3></div>${d?`<span class="dossier-confidence ${String(d.confidence||'').toLowerCase()}">${dEsc(d.confidence||'')} RESEARCH</span>`:''}</section>
     <section class="dossier-grid">
       <div class="dossier-block wide"><h4>HOW LONG TO BEAT</h4>${dHltb(d)}</div>
       <div class="dossier-block wide"><h4>QUICK SUMMARY</h4><p>${dEsc(summary)}</p></div>
