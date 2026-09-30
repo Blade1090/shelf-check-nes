@@ -46,6 +46,8 @@ assert(!app.includes('Showing first 500'),'500-card limit message returned');
 assert(app.includes("shelfcheck-nes-matty-v1"),'NES ownership storage key changed unexpectedly');
 for(const token of ['mainCardNodes','mountMainCards','refreshMainOwnership','reorderMainCards','applyMainView','scheduleMainView','node.hidden'])assert(app.includes(token),`fast main-list renderer missing ${token}`);
 assert(app.includes("host.innerHTML=list.map(x=>cardHTML(x)).join('')"),'initial full-list mount missing');
+const perf=read('performance.css');
+assert(perf.includes('.game[hidden]{display:none!important}'),'hidden game cards are not forced out of layout');
 
 const index=read('index.html');
 for(const id of ['rouletteBtn','myShelfBtn','buyBtn','wishlistBtn','dossierDialog','randomWishlistBtn','backupBtn','restoreBtn'])assert(index.includes(`id=\"${id}\"`),`missing UI control ${id}`);
@@ -59,7 +61,7 @@ assert(index.includes('quickmark-hotfix.css?v=1'),'Quick Mark hotfix stylesheet 
 assert(!index.includes('roulette-v2.js?v='),'legacy roulette enhancer is still loaded');
 assert(index.includes('wishlist-parity.js?v=1'),'wishlist parity script missing');
 assert(index.includes('backup-restore.js?v=2'),'backup/restore v2 missing');
-assert(index.includes('performance.css?v=1'),'performance stylesheet missing');
+assert(index.includes('performance.css?v=2'),'performance stylesheet v2 missing');
 assert(index.includes('parity.css?v=1'),'parity stylesheet missing');
 assert(index.includes('ps4-look.css?v=2'),'utility-button stylesheet missing');
 assert(index.includes('PHYSICAL NES COLLECTION COMPANION'),'NES hero identity missing');
@@ -95,8 +97,8 @@ assert(backup.includes("shelfcheck-nes-matty-v1")&&backup.includes("shelfcheck-n
 assert(backup.includes("app:'ShelfCheck NES'"),'backup identity guard missing');
 
 const sw=read('sw.js');
-assert(sw.includes("shelfcheck-nes-matty-v28"),'unexpected service-worker cache version');
-for(const f of ['performance.css?v=1','parity.css?v=1','ps4-look.css?v=2','collection-tools-v2.css?v=1','quickmark-hotfix.css?v=1','app.js?v=12','dossier.js?v=4','collection-tools-v2.js?v=1','collection-legacy-shim.js?v=1','quickmark-hotfix.js?v=1','wishlist-parity.js?v=1','backup-restore.js?v=2','dossiers-001-100.json','dossiers-801-816.json','covers-001-100.json'])assert(sw.includes(f),`service worker missing ${f}`);
+assert(sw.includes("shelfcheck-nes-matty-v29"),'unexpected service-worker cache version');
+for(const f of ['performance.css?v=2','parity.css?v=1','ps4-look.css?v=2','collection-tools-v2.css?v=1','quickmark-hotfix.css?v=1','app.js?v=12','dossier.js?v=4','collection-tools-v2.js?v=1','collection-legacy-shim.js?v=1','quickmark-hotfix.js?v=1','wishlist-parity.js?v=1','backup-restore.js?v=2','dossiers-001-100.json','dossiers-801-816.json','covers-001-100.json'])assert(sw.includes(f),`service worker missing ${f}`);
 
 console.log('PASS: Shelf Check NES static regression suite');
-console.log(JSON.stringify({census:816,dossiers:816,covers:815,cover_gap:missing[0],hltb:manifest.hltb_status,price_snapshot:prices.snapshot,parity:['backup_restore','random_wishlist','ps4_style_controls','roulette_three_card','play_progress','my_shelf_dashboard','repeat_open_compat','quick_mark_iphone_hotfix','instant_main_filters'],theme:'nes_red'},null,2));
+console.log(JSON.stringify({census:816,dossiers:816,covers:815,cover_gap:missing[0],hltb:manifest.hltb_status,price_snapshot:prices.snapshot,parity:['backup_restore','random_wishlist','ps4_style_controls','roulette_three_card','play_progress','my_shelf_dashboard','repeat_open_compat','quick_mark_iphone_hotfix','instant_main_filters','working_hidden_filter_cards'],theme:'nes_red'},null,2));
