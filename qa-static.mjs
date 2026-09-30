@@ -47,13 +47,26 @@ assert(app.includes("shelfcheck-nes-matty-v1"),'NES ownership storage key change
 assert(app.includes("list.map(x=>cardHTML(x)).join('')"),'full-list render path missing');
 
 const index=read('index.html');
-for(const id of ['rouletteBtn','myShelfBtn','buyBtn','wishlistBtn','dossierDialog'])assert(index.includes(`id=\"${id}\"`),`missing UI control ${id}`);
+for(const id of ['rouletteBtn','myShelfBtn','buyBtn','wishlistBtn','dossierDialog','randomWishlistBtn','backupBtn','restoreBtn'])assert(index.includes(`id=\"${id}\"`),`missing UI control ${id}`);
 assert(index.includes('app.js?v=11'),'index is not loading app.js v11');
+assert(index.includes('dossier.js?v=4'),'index is not loading dossier.js v4');
+assert(index.includes('wishlist-parity.js?v=1'),'wishlist parity script missing');
+assert(index.includes('backup-restore.js?v=1'),'backup/restore script missing');
 assert(index.includes('performance.css?v=1'),'performance stylesheet missing');
+assert(index.includes('parity.css?v=1'),'parity stylesheet missing');
+
+const dossier=read('dossier.js');
+assert(dossier.includes('window.openNESDossier=dRender'),'dossier opener is not exposed to parity tools');
+const wishlistParity=read('wishlist-parity.js');
+assert(wishlistParity.includes('RANDOM WISHLIST GAME'),'random wishlist control missing');
+assert(wishlistParity.includes("shelfcheck-nes-matty-wishlist-v1"),'wishlist storage key changed unexpectedly');
+const backup=read('backup-restore.js');
+assert(backup.includes("shelfcheck-nes-matty-v1")&&backup.includes("shelfcheck-nes-matty-wishlist-v1"),'backup does not cover both NES storage keys');
+assert(backup.includes("app:'ShelfCheck NES'"),'backup identity guard missing');
 
 const sw=read('sw.js');
-assert(sw.includes("shelfcheck-nes-matty-v21"),'unexpected service-worker cache version');
-for(const f of ['performance.css?v=1','app.js?v=11','dossiers-001-100.json','dossiers-801-816.json','covers-001-100.json'])assert(sw.includes(f),`service worker missing ${f}`);
+assert(sw.includes("shelfcheck-nes-matty-v22"),'unexpected service-worker cache version');
+for(const f of ['performance.css?v=1','parity.css?v=1','app.js?v=11','dossier.js?v=4','wishlist-parity.js?v=1','backup-restore.js?v=1','dossiers-001-100.json','dossiers-801-816.json','covers-001-100.json'])assert(sw.includes(f),`service worker missing ${f}`);
 
 console.log('PASS: Shelf Check NES static regression suite');
-console.log(JSON.stringify({census:816,dossiers:816,covers:815,cover_gap:missing[0],hltb:manifest.hltb_status,price_snapshot:prices.snapshot},null,2));
+console.log(JSON.stringify({census:816,dossiers:816,covers:815,cover_gap:missing[0],hltb:manifest.hltb_status,price_snapshot:prices.snapshot,parity:['backup_restore','random_wishlist']},null,2));
