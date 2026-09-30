@@ -18,6 +18,7 @@ const DATA={census,tracked,pcu,pcAlias,covers};
 const STORAGE='shelfcheck-nes-matty-v1';
 const el=id=>document.getElementById(id);
 const allIds=Object.values(DATA.census.identities).flat();
+const searchTextById=new Map(allIds.map(x=>[x.identity_id,[x.canonical_title,...(x.aliases||[])].join('\n').toLowerCase()]));
 const priceByProduct=new Map((priceData.rows||[]).map(([id,p])=>[Number(id),Number(p)]));
 const priceByIdentity=new Map();
 for(const x of allIds){const prices=(x.product_ids||[]).map(s=>Number(String(s).replace('pc-',''))).filter(id=>priceByProduct.has(id)).map(id=>priceByProduct.get(id));if(prices.length)priceByIdentity.set(x.identity_id,Math.min(...prices));}
@@ -25,6 +26,9 @@ let state={owned:new Set(),imported:false,summary:null,filter:'ALL',q:'',sort:'T
 let modalScrollY=0;
 let rouletteMode='OWNED';
 const rouletteSeen={OWNED:new Set(),NEEDED:new Set(),ALL:new Set()};
+const mainCardNodes=new Map();
+let mainCardsMounted=false;
+let mainFilterFrame=0;
 try{const saved=JSON.parse(localStorage.getItem(STORAGE)||'null');if(saved){state.owned=new Set(saved.owned||[]);state.imported=!!saved.imported;state.summary=saved.summary||null;state.sort=saved.sort||'TITLE_ASC';}}catch{}
 function save(){localStorage.setItem(STORAGE,JSON.stringify({owned:[...state.owned],imported:state.imported,summary:state.summary,sort:state.sort}));}
 function coverInfo(id){const row=DATA.covers[id];if(!row)return null;if(Array.isArray(row))return {u:row[0].startsWith('http')?row[0]:LIBRETRO_BASE+row[0],l:row[1]||null};return row;}
@@ -34,17 +38,49 @@ function priceSort(a,b,dir){const ap=priceByIdentity.get(a.identity_id),bp=price
 function sortList(list){if(state.sort==='TITLE_DESC')return list.sort((a,b)=>-az(a,b));if(state.sort==='OWNED_FIRST')return list.sort((a,b)=>(Number(state.owned.has(b.identity_id))-Number(state.owned.has(a.identity_id)))||az(a,b));if(state.sort==='NEEDED_FIRST')return list.sort((a,b)=>(Number(state.owned.has(a.identity_id))-Number(state.owned.has(b.identity_id)))||az(a,b));if(state.sort==='PRICE_LOW')return list.sort((a,b)=>priceSort(a,b,1));if(state.sort==='PRICE_HIGH')return list.sort((a,b)=>priceSort(a,b,-1));return list.sort(az);}
 function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function cardHTML(x,forceOwned=false){const o=forceOwned||state.owned.has(x.identity_id);const name=titleFor(x);const cover=coverInfo(x.identity_id);const art=cover?.u?`<button class="cover-button" type="button" data-cover="${escapeHTML(cover.u)}" data-title="${escapeHTML(name)}" aria-label="Enlarge ${escapeHTML(name)} cover"><img class="cover" src="${escapeHTML(cover.u)}" alt="${escapeHTML(name)} NES box art" loading="lazy" decoding="async"></button>`:`<div class="cover cover-missing" aria-hidden="true"><span>NES</span></div>`;const label=cover?.l?`<em class="product-note">${escapeHTML(cover.l)}</em>`:'';return `<article class="game ${o?'owned':''}" data-identity-id="${escapeHTML(x.identity_id)}">${art}<div class="game-copy"><strong>${escapeHTML(name)}</strong><small>${x.license_class==='UNLICENSED'?'UNLICENSED • ':''}${x.availability.replaceAll('_',' ')}</small>${label}</div><span class="status">${o?'OWNED':'NEEDED'}</span></article>`;}
-function render(){const owned=state.owned.size,total=allIds.length,pct=(owned/total*100).toFixed(1);el('ownedCount').textContent=owned;el('totalCount').textContent=total;el('pct').textContent=pct+'%';el('barFill').style.width=pct+'%';if(el('headerProgress'))el('headerProgress').textContent=`${owned} / ${total}`;el('importStatus').textContent=state.imported?`${state.summary?.nes_famicom_game_rows||0} NES/Famicom rows imported • ${state.summary?.matched_non_core_rows||0} tracked outside CORE • ${state.summary?.unmatched_or_reconcile_rows||0} reconcile`:'No GameEye file imported yet';if(state.summary&&el('details'))el('details').textContent=JSON.stringify(state.summary,null,2);if(el('sort'))el('sort').value=state.sort;let list=allIds.filter(x=>{const o=state.owned.has(x.identity_id);if(state.filter==='OWNED'&&!o)return false;if(state.filter==='NEEDED'&&o)return false;const q=state.q.trim().toLowerCase();return !q||x.canonical_title.toLowerCase().includes(q)||(x.aliases||[]).some(a=>a.toLowerCase().includes(q));});list=sortList(list);el('gameList').innerHTML=list.map(x=>cardHTML(x)).join('');}
+function mountMainCards(){
+  if(mainCardsMounted)return;
+  const list=sortList(allIds.slice());
+  const host=el('gameList');
+  host.innerHTML=list.map(x=>cardHTML(x)).join('');
+  for(const node of host.querySelectorAll('.game[data-identity-id]'))mainCardNodes.set(node.dataset.identityId,node);
+  mainCardsMounted=true;
+}
+function refreshMainOwnership(){
+  for(const x of allIds){const node=mainCardNodes.get(x.identity_id);if(!node)continue;const owned=state.owned.has(x.identity_id);node.classList.toggle('owned',owned);const badge=node.querySelector('.status');if(badge)badge.textContent=owned?'OWNED':'NEEDED';}
+}
+function reorderMainCards(){
+  if(!mainCardsMounted)return;
+  const frag=document.createDocumentFragment();
+  for(const x of sortList(allIds.slice())){const node=mainCardNodes.get(x.identity_id);if(node)frag.appendChild(node);}
+  el('gameList').appendChild(frag);
+}
+function applyMainView(){
+  mainFilterFrame=0;
+  if(!mainCardsMounted)return;
+  const q=state.q.trim().toLowerCase();
+  const ownedOnly=state.filter==='OWNED',neededOnly=state.filter==='NEEDED';
+  for(const x of allIds){
+    const node=mainCardNodes.get(x.identity_id);if(!node)continue;
+    const owned=state.owned.has(x.identity_id);
+    const statusMatch=!ownedOnly&&!neededOnly||(ownedOnly&&owned)||(neededOnly&&!owned);
+    const searchMatch=!q||(searchTextById.get(x.identity_id)||'').includes(q);
+    node.hidden=!(statusMatch&&searchMatch);
+  }
+}
+function scheduleMainView(){if(mainFilterFrame)cancelAnimationFrame(mainFilterFrame);mainFilterFrame=requestAnimationFrame(applyMainView);}
+function updateMainSummary(){const owned=state.owned.size,total=allIds.length,pct=(owned/total*100).toFixed(1);el('ownedCount').textContent=owned;el('totalCount').textContent=total;el('pct').textContent=pct+'%';el('barFill').style.width=pct+'%';if(el('headerProgress'))el('headerProgress').textContent=`${owned} / ${total}`;el('importStatus').textContent=state.imported?`${state.summary?.nes_famicom_game_rows||0} NES/Famicom rows imported • ${state.summary?.matched_non_core_rows||0} tracked outside CORE • ${state.summary?.unmatched_or_reconcile_rows||0} reconcile`:'No GameEye file imported yet';if(state.summary&&el('details'))el('details').textContent=JSON.stringify(state.summary,null,2);if(el('sort'))el('sort').value=state.sort;}
+function render({ownershipChanged=false,reorder=false}={}){updateMainSummary();mountMainCards();if(ownershipChanged)refreshMainOwnership();if(reorder)reorderMainCards();applyMainView();}
 function renderMyShelf(){const total=allIds.length,owned=state.owned.size,remaining=total-owned,pct=(owned/total*100).toFixed(1);el('shelfOwned').textContent=owned;el('shelfRemaining').textContent=remaining;el('shelfPct').textContent=pct+'%';el('shelfBar').style.width=pct+'%';const q=(el('shelfSearch')?.value||'').trim().toLowerCase();const ownedGames=allIds.filter(x=>state.owned.has(x.identity_id)).filter(x=>!q||x.canonical_title.toLowerCase().includes(q)||(x.aliases||[]).some(a=>a.toLowerCase().includes(q))).sort(az);el('shelfList').innerHTML=ownedGames.length?ownedGames.map(x=>cardHTML(x,true)).join(''):`<div class="shelf-empty">${state.imported?'No owned games match that search.':'Import Matty\'s GameEye CSV first and his shelf will appear here.'}</div>`;}
 function roulettePool(){if(rouletteMode==='OWNED')return allIds.filter(x=>state.owned.has(x.identity_id));if(rouletteMode==='NEEDED')return allIds.filter(x=>!state.owned.has(x.identity_id));return allIds;}
 function setRouletteMode(mode){rouletteMode=mode;document.querySelectorAll('[data-roulette-mode]').forEach(b=>b.classList.toggle('active',b.dataset.rouletteMode===mode));spinRoulette();}
 function spinRoulette(){const pool=roulettePool();const result=el('rouletteResult');const info=el('rouletteInfo');if(!pool.length){result.innerHTML=`<div class="roulette-empty">${rouletteMode==='OWNED'&&!state.imported?'Import Matty\'s GameEye CSV first so Roulette knows what is on his shelf.':'No games are available in this group.'}</div>`;info.textContent='';return;}let unseen=pool.filter(x=>!rouletteSeen[rouletteMode].has(x.identity_id));let reshuffled=false;if(!unseen.length){rouletteSeen[rouletteMode].clear();unseen=pool;reshuffled=true;}const pick=unseen[Math.floor(Math.random()*unseen.length)];rouletteSeen[rouletteMode].add(pick.identity_id);const owned=state.owned.has(pick.identity_id);const cover=coverInfo(pick.identity_id);const name=titleFor(pick);const art=cover?.u?`<button class="roulette-cover-button cover-button" type="button" data-cover="${escapeHTML(cover.u)}" data-title="${escapeHTML(name)}"><img src="${escapeHTML(cover.u)}" alt="${escapeHTML(name)} NES box art"></button>`:`<div class="roulette-cover-missing">NES</div>`;const label=cover?.l?`<div class="roulette-product">${escapeHTML(cover.l)}</div>`:'';result.innerHTML=`<div class="roulette-pick ${owned?'owned':''}" data-identity-id="${escapeHTML(pick.identity_id)}">${art}<div class="roulette-copy"><span class="roulette-kicker">YOUR PICK</span><h3>${escapeHTML(name)}</h3><div class="roulette-meta">${pick.license_class==='UNLICENSED'?'UNLICENSED • ':''}${pick.availability.replaceAll('_',' ')}</div>${label}<span class="roulette-status ${owned?'owned':''}">${owned?'OWNED':'NEEDED'}</span></div></div>`;const remaining=Math.max(pool.length-rouletteSeen[rouletteMode].size,0);info.textContent=reshuffled?`You saw every ${rouletteMode.toLowerCase()} game — deck reshuffled.`:`${remaining} unseen ${rouletteMode.toLowerCase()} game${remaining===1?'':'s'} left before a reshuffle.`;}
 function lockPage(){modalScrollY=window.scrollY||0;document.body.classList.add('shelf-open');document.body.style.position='fixed';document.body.style.top=`-${modalScrollY}px`;document.body.style.width='100%';}
 function unlockPage(){document.body.classList.remove('shelf-open');document.body.style.position='';document.body.style.top='';document.body.style.width='';window.scrollTo(0,modalScrollY);}
-el('file').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;const result=importGameEye(await f.text(),DATA);state.owned=new Set(result.owned_core_identities.map(x=>x.identity_id));state.imported=true;state.summary=result.summary;Object.values(rouletteSeen).forEach(s=>s.clear());save();render();});
-el('search').addEventListener('input',e=>{state.q=e.target.value;render();});
-if(el('sort'))el('sort').addEventListener('change',e=>{state.sort=e.target.value;save();render();});
-for(const b of document.querySelectorAll('[data-filter]'))b.addEventListener('click',()=>{state.filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x===b));render();});
+el('file').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;const result=importGameEye(await f.text(),DATA);state.owned=new Set(result.owned_core_identities.map(x=>x.identity_id));state.imported=true;state.summary=result.summary;Object.values(rouletteSeen).forEach(s=>s.clear());save();render({ownershipChanged:true,reorder:true});});
+el('search').addEventListener('input',e=>{state.q=e.target.value;scheduleMainView();});
+if(el('sort'))el('sort').addEventListener('change',e=>{state.sort=e.target.value;save();reorderMainCards();applyMainView();});
+for(const b of document.querySelectorAll('[data-filter]'))b.addEventListener('click',()=>{state.filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x===b));scheduleMainView();});
 el('myShelfBtn')?.addEventListener('click',()=>{el('shelfSearch').value='';renderMyShelf();lockPage();el('myShelfDialog').showModal();});
 el('myShelfDialog')?.addEventListener('close',unlockPage);
 el('shelfSearch')?.addEventListener('input',renderMyShelf);
@@ -52,7 +88,7 @@ el('rouletteBtn')?.addEventListener('click',()=>{rouletteMode=state.imported?'OW
 el('rouletteDialog')?.addEventListener('close',unlockPage);
 el('rouletteSpin')?.addEventListener('click',spinRoulette);
 for(const b of document.querySelectorAll('[data-roulette-mode]'))b.addEventListener('click',()=>setRouletteMode(b.dataset.rouletteMode));
-el('reset').addEventListener('click',()=>{if(confirm('Clear the local NES ownership import on this device?')){localStorage.removeItem(STORAGE);state={owned:new Set(),imported:false,summary:null,filter:'ALL',q:'',sort:'TITLE_ASC'};Object.values(rouletteSeen).forEach(s=>s.clear());el('search').value='';if(el('sort'))el('sort').value='TITLE_ASC';document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x.dataset.filter==='ALL'));if(el('details'))el('details').textContent='Import Matty\'s GameEye file to test ownership matching.';render();}});
+el('reset').addEventListener('click',()=>{if(confirm('Clear the local NES ownership import on this device?')){localStorage.removeItem(STORAGE);state={owned:new Set(),imported:false,summary:null,filter:'ALL',q:'',sort:'TITLE_ASC'};Object.values(rouletteSeen).forEach(s=>s.clear());el('search').value='';if(el('sort'))el('sort').value='TITLE_ASC';document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x.dataset.filter==='ALL'));if(el('details'))el('details').textContent='Import Matty\'s GameEye file to test ownership matching.';render({ownershipChanged:true,reorder:true});}});
 document.addEventListener('click',e=>{const b=e.target.closest('.cover-button');if(!b)return;const d=el('coverDialog');el('coverDialogImg').src=b.dataset.cover;el('coverDialogImg').alt=`${b.dataset.title} NES box art`;el('coverDialogTitle').textContent=b.dataset.title;d.showModal();});
 render();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
