@@ -1,1 +1,1 @@
-.games>.game{content-visibility:auto;contain-intrinsic-size:auto 154px}@media(max-width:600px){.games>.game{contain-intrinsic-size:auto 122px}}@media(max-width:390px){.games>.game{contain-intrinsic-size:auto 112px}}
+.game[hidden]{display:none!important}.games>.game{content-visibility:auto;contain-intrinsic-size:auto 154px}@media(max-width:600px){.games>.game{contain-intrinsic-size:auto 122px}}@media(max-width:390px){.games>.game{contain-intrinsic-size:auto 112px}}
