@@ -53,8 +53,9 @@ assert(perf.includes('contain-intrinsic-size:auto 166px'),'larger card intrinsic
 const index=read('index.html');
 for(const id of ['rouletteBtn','myShelfBtn','buyBtn','wishlistBtn','dossierDialog','randomWishlistBtn','backupBtn','restoreBtn'])assert(index.includes(`id=\"${id}\"`),`missing UI control ${id}`);
 assert(index.includes('app.js?v=12'),'index is not loading optimized app.js v12');
-assert(index.includes('dossier.js?v=5'),'index is not loading dossier.js v5');
-assert(index.includes('dossier.css?v=3'),'index is not loading dossier.css v3');
+assert(index.includes('pricing.css?v=2'),'index is not loading pricing.css v2');
+assert(index.includes('dossier.js?v=6'),'index is not loading dossier.js v6');
+assert(index.includes('dossier.css?v=4'),'index is not loading dossier.css v4');
 assert(index.includes('collection-tools-v2.js?v=1'),'collection parity script missing');
 assert(index.includes('collection-tools-v2.css?v=1'),'collection parity stylesheet missing');
 assert(index.includes('collection-legacy-shim.js?v=1'),'collection modal compatibility shim missing');
@@ -95,6 +96,9 @@ assert(dossier.includes('window.openNESDossier=dRender'),'dossier opener is not 
 for(const token of ['STORE MODE','dossierCheck','SHOULD I BUY IT?','QUICK SUMMARY','HOW LONG TO BEAT','PRICE GUIDE · LOOSE'])assert(dossier.includes(token),`PS4-style dossier feature missing ${token}`);
 const dossierCss=read('dossier.css');
 for(const token of ['.dossier-store','.dossier-store-form','width:190px','.dossier-check-btn'])assert(dossierCss.includes(token),`PS4-style dossier layout missing ${token}`);
+assert(dossierCss.includes('.dossier-hero .dossier-summary{display:none!important}'),'duplicate hero summary guard missing');
+const pricingCss=read('pricing.css');
+assert(pricingCss.includes('.nes-price small{font:inherit;font-size:inherit;font-weight:inherit'),'loose-price typography is not unified');
 const wishlistParity=read('wishlist-parity.js');
 assert(wishlistParity.includes('RANDOM WISHLIST GAME'),'random wishlist control missing');
 assert(wishlistParity.includes("shelfcheck-nes-matty-wishlist-v1"),'wishlist storage key changed unexpectedly');
@@ -103,8 +107,8 @@ assert(backup.includes("shelfcheck-nes-matty-v1")&&backup.includes("shelfcheck-n
 assert(backup.includes("app:'ShelfCheck NES'"),'backup identity guard missing');
 
 const sw=read('sw.js');
-assert(sw.includes("shelfcheck-nes-matty-v31"),'unexpected service-worker cache version');
-for(const f of ['performance.css?v=3','parity.css?v=1','ps4-look.css?v=3','dossier.css?v=3','collection-tools-v2.css?v=1','quickmark-hotfix.css?v=1','app.js?v=12','dossier.js?v=5','collection-tools-v2.js?v=1','collection-legacy-shim.js?v=1','quickmark-hotfix.js?v=1','wishlist-parity.js?v=1','backup-restore.js?v=2','dossiers-001-100.json','dossiers-801-816.json','covers-001-100.json'])assert(sw.includes(f),`service worker missing ${f}`);
+assert(sw.includes("shelfcheck-nes-matty-v32"),'unexpected service-worker cache version');
+for(const f of ['pricing.css?v=2','performance.css?v=3','parity.css?v=1','ps4-look.css?v=3','dossier.css?v=4','collection-tools-v2.css?v=1','quickmark-hotfix.css?v=1','app.js?v=12','dossier.js?v=6','collection-tools-v2.js?v=1','collection-legacy-shim.js?v=1','quickmark-hotfix.js?v=1','wishlist-parity.js?v=1','backup-restore.js?v=2','dossiers-001-100.json','dossiers-801-816.json','covers-001-100.json'])assert(sw.includes(f),`service worker missing ${f}`);
 
 console.log('PASS: Shelf Check NES static regression suite');
-console.log(JSON.stringify({census:816,dossiers:816,covers:815,cover_gap:missing[0],hltb:manifest.hltb_status,price_snapshot:prices.snapshot,parity:['backup_restore','random_wishlist','ps4_style_controls','roulette_three_card','play_progress','my_shelf_dashboard','repeat_open_compat','quick_mark_iphone_hotfix','instant_main_filters','working_hidden_filter_cards','compact_sort','larger_main_cards','ps4_style_dossier_hierarchy'],theme:'nes_red'},null,2));
+console.log(JSON.stringify({census:816,dossiers:816,covers:815,cover_gap:missing[0],hltb:manifest.hltb_status,price_snapshot:prices.snapshot,parity:['backup_restore','random_wishlist','ps4_style_controls','roulette_three_card','play_progress','my_shelf_dashboard','repeat_open_compat','quick_mark_iphone_hotfix','instant_main_filters','working_hidden_filter_cards','compact_sort','larger_main_cards','ps4_style_dossier_hierarchy','single_dossier_summary','unified_loose_price_type'],theme:'nes_red'},null,2));
