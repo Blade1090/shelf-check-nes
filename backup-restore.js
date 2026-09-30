@@ -13,8 +13,9 @@ function backup(){
 async function restore(file){
   let data;try{data=JSON.parse(await file.text())}catch{alert('That backup file is not valid JSON.');return}
   if(data?.app!=='ShelfCheck NES'||data?.schema!==1||!data.storage||typeof data.storage!=='object'){alert('That is not a compatible Shelf Check NES backup.');return}
+  const next={};for(const key of [OWNED,WISHLIST]){const value=data.storage[key];if(value!=null&&typeof value!=='string'){alert('Backup data is malformed. Nothing was restored.');return}next[key]=value??null;}
   if(!confirm('Restore this Shelf Check NES backup on this device? Current local ownership and wishlist data will be replaced.'))return;
-  for(const key of [OWNED,WISHLIST]){const value=data.storage[key];if(value==null)localStorage.removeItem(key);else if(typeof value==='string')localStorage.setItem(key,value);else{alert('Backup data is malformed. Nothing was restored.');return}}
+  for(const key of [OWNED,WISHLIST]){if(next[key]==null)localStorage.removeItem(key);else localStorage.setItem(key,next[key]);}
   location.reload();
 }
 backupBtn?.addEventListener('click',backup);
