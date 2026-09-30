@@ -23,6 +23,8 @@ jobs:
           node --check dossier.js
           node --check roulette-v2.js
           node --check wishlist-buy.js
+          node --check wishlist-parity.js
+          node --check backup-restore.js
           node --check pricing.js
           node --check import-core.mjs
           node --check import-test.mjs
