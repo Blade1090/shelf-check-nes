@@ -52,6 +52,7 @@ assert(index.includes('app.js?v=11'),'index is not loading app.js v11');
 assert(index.includes('dossier.js?v=4'),'index is not loading dossier.js v4');
 assert(index.includes('collection-tools-v2.js?v=1'),'collection parity script missing');
 assert(index.includes('collection-tools-v2.css?v=1'),'collection parity stylesheet missing');
+assert(index.includes('collection-legacy-shim.js?v=1'),'collection modal compatibility shim missing');
 assert(!index.includes('roulette-v2.js?v='),'legacy roulette enhancer is still loaded');
 assert(index.includes('wishlist-parity.js?v=1'),'wishlist parity script missing');
 assert(index.includes('backup-restore.js?v=2'),'backup/restore v2 missing');
@@ -74,6 +75,8 @@ assert(tools.includes("window.NES_PLAY_STATE"),'play-progress state API missing'
 assert(tools.includes("window.openNESDossier"),'collection tools are not linked to dossiers');
 const toolsCss=read('collection-tools-v2.css');
 for(const token of ['.ct-roulette-hand','.ct-ring','.ct-stats','.ct-supers','.ct-mark-list'])assert(toolsCss.includes(token),`collection parity style missing ${token}`);
+const shim=read('collection-legacy-shim.js');
+for(const token of ['rouletteResult','rouletteInfo','shelfSearch','shelfOwned','shelfList'])assert(shim.includes(token),`legacy modal compatibility hook missing ${token}`);
 
 const dossier=read('dossier.js');
 assert(dossier.includes('window.openNESDossier=dRender'),'dossier opener is not exposed to parity tools');
@@ -85,8 +88,8 @@ assert(backup.includes("shelfcheck-nes-matty-v1")&&backup.includes("shelfcheck-n
 assert(backup.includes("app:'ShelfCheck NES'"),'backup identity guard missing');
 
 const sw=read('sw.js');
-assert(sw.includes("shelfcheck-nes-matty-v25"),'unexpected service-worker cache version');
-for(const f of ['performance.css?v=1','parity.css?v=1','ps4-look.css?v=2','collection-tools-v2.css?v=1','app.js?v=11','dossier.js?v=4','collection-tools-v2.js?v=1','wishlist-parity.js?v=1','backup-restore.js?v=2','dossiers-001-100.json','dossiers-801-816.json','covers-001-100.json'])assert(sw.includes(f),`service worker missing ${f}`);
+assert(sw.includes("shelfcheck-nes-matty-v26"),'unexpected service-worker cache version');
+for(const f of ['performance.css?v=1','parity.css?v=1','ps4-look.css?v=2','collection-tools-v2.css?v=1','app.js?v=11','dossier.js?v=4','collection-tools-v2.js?v=1','collection-legacy-shim.js?v=1','wishlist-parity.js?v=1','backup-restore.js?v=2','dossiers-001-100.json','dossiers-801-816.json','covers-001-100.json'])assert(sw.includes(f),`service worker missing ${f}`);
 
 console.log('PASS: Shelf Check NES static regression suite');
-console.log(JSON.stringify({census:816,dossiers:816,covers:815,cover_gap:missing[0],hltb:manifest.hltb_status,price_snapshot:prices.snapshot,parity:['backup_restore','random_wishlist','ps4_style_controls','roulette_three_card','play_progress','my_shelf_dashboard'],theme:'nes_red'},null,2));
+console.log(JSON.stringify({census:816,dossiers:816,covers:815,cover_gap:missing[0],hltb:manifest.hltb_status,price_snapshot:prices.snapshot,parity:['backup_restore','random_wishlist','ps4_style_controls','roulette_three_card','play_progress','my_shelf_dashboard','repeat_open_compat'],theme:'nes_red'},null,2));
