@@ -22,7 +22,12 @@ function addPrice(node){
   const p=priceForNode(node);if(!p)return;
   node.dataset.priceEnhanced='1';
   const copy=node.querySelector('.game-copy,.wish-copy,.roulette-copy');
-  if(copy){const tag=document.createElement('span');tag.className='nes-price';tag.innerHTML=`<small>LOOSE</small> ${money(p.price)}`;copy.appendChild(tag);}
+  if(copy){
+    const tag=document.createElement('span');tag.className='nes-price';
+    const lead=node.matches?.('.game')?'Tap for details <i>·</i> ':'';
+    tag.innerHTML=`${lead}<b>Loose ${money(p.price)}</b>`;
+    copy.appendChild(tag);
+  }
 }
 function enhanceCards(root=document){
   for(const node of root.querySelectorAll?.('.game,.wish-card,.roulette-pick')||[])addPrice(node);
