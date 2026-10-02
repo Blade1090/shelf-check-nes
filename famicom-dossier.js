@@ -75,6 +75,12 @@ function render(id){
       ${d.japanese_version_notes?`<div class="dossier-block wide"><h4>JAPANESE VERSION NOTES</h4><p>${esc(d.japanese_version_notes)}</p></div>`:''}
     </section>`;
   const opening=!dlg.open;
+  const changingIdentity=dlg.dataset.dossierIdentity!==id;
+  dlg.dataset.dossierIdentity=id;
+  if(!opening&&changingIdentity){
+    dlg.scrollTop=0;
+    requestAnimationFrame(()=>{dlg.scrollTop=0;requestAnimationFrame(()=>{dlg.scrollTop=0})});
+  }
   if(opening){
     fcScroll=window.scrollY||window.pageYOffset||0;
     dlg.dataset.dossierOwner=FC_DIALOG_OWNER;
