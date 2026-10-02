@@ -13,7 +13,7 @@ const byId=new Map((fcCensus.identities||[]).map(x=>[x.identity_id,x]));
 const dossiers=new Map(chunks.flat().map(x=>[x.identity_id,x]));
 const fcPriceById=new Map((fcPriceData.rows||[]).map(([id,p])=>[id,Number(p)]));
 const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
-let fcScroll=0;
+let fcScroll=0;const FC_DIALOG_OWNER='FAMICOM';
 function readOwned(key){try{return new Set(JSON.parse(localStorage.getItem(key)||'{}').owned||[])}catch{return new Set()}}
 function readWishlist(){try{return new Set(JSON.parse(localStorage.getItem(FC_WISHLIST)||'[]'))}catch{return new Set()}}
 function wishlistButton(id,owned){
@@ -74,7 +74,17 @@ function render(id){
       ${d.nes_counterpart_context?`<div class="dossier-block wide"><h4>NES CONNECTION</h4><p>${esc(d.nes_counterpart_context)}</p></div>`:''}
       ${d.japanese_version_notes?`<div class="dossier-block wide"><h4>JAPANESE VERSION NOTES</h4><p>${esc(d.japanese_version_notes)}</p></div>`:''}
     </section>`;
-  fcScroll=window.scrollY||0;document.body.style.position='fixed';document.body.style.top=`-${fcScroll}px`;document.body.style.width='100%';dlg.showModal();
+  const opening=!dlg.open;
+  if(opening){
+    fcScroll=window.scrollY||window.pageYOffset||0;
+    dlg.dataset.dossierOwner=FC_DIALOG_OWNER;
+    document.body.style.position='fixed';
+    document.body.style.top=`-${fcScroll}px`;
+    document.body.style.width='100%';
+    dlg.showModal();
+    dlg.scrollTop=0;
+    requestAnimationFrame(()=>{dlg.scrollTop=0});
+  }
 }
 window.openFamicomDossier=render;
 document.addEventListener('click',e=>{
@@ -83,4 +93,14 @@ document.addEventListener('click',e=>{
   if(e.target.closest('button,input,select,a'))return;
   const card=e.target.closest('.famicom-game[data-identity-id]');if(card)render(card.dataset.identityId);
 });
-document.getElementById('dossierDialog')?.addEventListener('close',()=>{if(document.body.style.position==='fixed'){document.body.style.position='';document.body.style.top='';document.body.style.width='';window.scrollTo(0,fcScroll)}});
+document.getElementById('dossierDialog')?.addEventListener('close',()=>{
+  const dlg=document.getElementById('dossierDialog');
+  if(!dlg||dlg.dataset.dossierOwner!==FC_DIALOG_OWNER)return;
+  const y=fcScroll;
+  delete dlg.dataset.dossierOwner;
+  document.body.style.position='';
+  document.body.style.top='';
+  document.body.style.width='';
+  window.scrollTo(0,y);
+  requestAnimationFrame(()=>{window.scrollTo(0,y);requestAnimationFrame(()=>window.scrollTo(0,y))});
+});
