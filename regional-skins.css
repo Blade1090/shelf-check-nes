@@ -1,0 +1,698 @@
+/* Regional hunt controls + hardware skins */
+#huntTools[hidden]{display:none!important}
+#huntTools{margin:10px 0 12px;padding:13px;border:1px solid #3b4658;border-radius:16px;background:linear-gradient(145deg,#19202b,#141922)}
+.rh-random-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.rh-random-row>div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.rh-random-row small{font-size:.61rem;font-weight:950;letter-spacing:.13em;color:#ff858b}
+.rh-random-row b{font-size:.82rem;color:#c8d2e1}
+.rh-random-row button,.rh-another{background:linear-gradient(100deg,#ff9b55,#ed568b 56%,#9c50e6);color:#09111c;font-weight:950;box-shadow:0 5px 18px #0004}
+.rh-random-row.owned button{background:linear-gradient(100deg,#50d0c1,#4e8ff1)}
+.rh-bands{display:flex;gap:6px;overflow:auto;margin-top:10px;padding:1px 0 3px;scrollbar-width:thin}
+.rh-bands button{padding:8px 10px;font-size:.68rem;background:#222a36;border:1px solid #3a4658;color:#c7d0dc}
+.rh-bands button.active{background:#582127;border-color:#db5b63;color:#ffe9e9}
+.rh-another{display:block;width:calc(100% - 48px);margin:12px 24px;padding:13px;border-radius:12px}
+@media(max-width:600px){.rh-random-row{align-items:stretch;flex-direction:column}.rh-random-row button{width:100%}.rh-another{width:calc(100% - 24px);margin:10px 12px}.rh-bands button{font-size:.64rem;padding:8px}}
+
+/* NES skin: charcoal / hardware gray / Nintendo-style red */
+body[data-active-set="NES"]{background:radial-gradient(circle at 50% -15%,#2a1a1c 0,#0d1016 34%)}
+body[data-active-set="NES"] .set-switch{background:#11161e;border-color:#343b46}
+body[data-active-set="NES"] .set-switch button.active{background:#e9e9e9;color:#171717}
+body[data-active-set="NES"] #huntTools{border-color:#443037;background:linear-gradient(145deg,#1c2028,#14181f)}
+body[data-active-set="NES"] .rh-bands button.active{background:#4a2025;border-color:#d71920}
+
+/* Famicom skin: warm cream / maroon */
+body[data-active-set="FAMICOM"]{
+  --red:#8f2033;--red2:#611522;
+  background:radial-gradient(circle at 50% -12%,#321822 0,#171116 34%,#0d1015 68%);
+}
+body[data-active-set="FAMICOM"] header{background:#151116f2;border-bottom-color:#552735}
+body[data-active-set="FAMICOM"] .brand-mark{background:linear-gradient(145deg,#fff5dc,#e9d7ad);color:#761a2c;border-color:#7a3040;box-shadow:inset 0 0 0 2px #fffaf0}
+body[data-active-set="FAMICOM"] .brand b span{color:#f0d6a6}
+body[data-active-set="FAMICOM"] .brand small{color:#cabfc4}
+body[data-active-set="FAMICOM"] .set-switch{background:#1b1419;border-color:#6d3040}
+body[data-active-set="FAMICOM"] .set-switch button{color:#d3c7cc}
+body[data-active-set="FAMICOM"] .set-switch button.active{background:#fff0cf;color:#7d1c31;box-shadow:0 2px 10px #0006}
+body[data-active-set="FAMICOM"] .eyebrow,body[data-active-set="FAMICOM"] #heroEyebrow{color:#ffdca0!important}
+body[data-active-set="FAMICOM"] h1{color:#fff7e8}
+body[data-active-set="FAMICOM"] #search{background:#141318;border-color:#673141}
+body[data-active-set="FAMICOM"] #search:focus{outline-color:#e1b1c0!important}
+body[data-active-set="FAMICOM"] nav button.active{outline-color:#f0d6a6!important;background:#4c2730!important;color:#fff1d2}
+body[data-active-set="FAMICOM"] .collection-summary{background:linear-gradient(145deg,#21141a,#151318);border-color:#6f3141!important}
+body[data-active-set="FAMICOM"] .summary-right strong{color:#ffdca0!important}
+body[data-active-set="FAMICOM"] .meter div{background:linear-gradient(90deg,#8d1f34,#f0c98b)!important}
+body[data-active-set="FAMICOM"] #huntTools{background:linear-gradient(145deg,#25141c,#151318);border-color:#743044}
+body[data-active-set="FAMICOM"] .rh-random-row small{color:#ffdca0}
+body[data-active-set="FAMICOM"] .rh-random-row button{background:linear-gradient(100deg,#fff0c8,#dc748a,#96213b);color:#251018}
+body[data-active-set="FAMICOM"] .rh-random-row.owned button{background:linear-gradient(100deg,#ffe9bc,#c75d78,#842038);color:#251018}
+body[data-active-set="FAMICOM"] .rh-bands button{background:#1c171d;border-color:#583543;color:#e4d9dd}
+body[data-active-set="FAMICOM"] .rh-bands button.active{background:#7d1f35;border-color:#f0c6d0;color:#fff7e8}
+body[data-active-set="FAMICOM"] .famicom-game{background:linear-gradient(145deg,#1d151b,#121318);border-color:#4e2d39}
+body[data-active-set="FAMICOM"] .famicom-game.owned{border-color:#37674a}
+body[data-active-set="FAMICOM"] .dossier-dialog,body[data-active-set="FAMICOM"] .feature-dialog,body[data-active-set="FAMICOM"] .shelf-dialog,body[data-active-set="FAMICOM"] .roulette-dialog{background:#121217;border-color:#6c3040}
+body[data-active-set="FAMICOM"] .dossier-head,body[data-active-set="FAMICOM"] .feature-head,body[data-active-set="FAMICOM"] .ct-modal-head{background:#161217f4;border-bottom-color:#512938}
+body[data-active-set="FAMICOM"] .fc-dossier-card{border-color:#74394a!important;background:linear-gradient(145deg,#21141b,#151319)!important}
+body[data-active-set="FAMICOM"] .dossier-research-head small,body[data-active-set="FAMICOM"] .dossier-block h4{color:#ffd69a}
+body[data-active-set="FAMICOM"] .fc-price-big{color:#ffe1a8}
+body[data-active-set="FAMICOM"] .fc-price-block{border-color:#74404e;background:linear-gradient(180deg,#23151c,#151318)}
+body[data-active-set="FAMICOM"] footer{color:#9f8f97}
+
+
+/* Famicom skin v3 — COOL CHARCOAL + FAMICOM CRIMSON + CLEAN IVORY
+   Deliberately removes the brown/khaki cast from the previous pass. */
+body[data-active-set="FAMICOM"]{
+  --red:#b2243b!important;
+  --red2:#7f1728!important;
+  background:#0d1016!important;
+  color:#f5f1e8;
+}
+body[data-active-set="FAMICOM"] header{
+  background:#0f1117f4!important;
+  border-bottom-color:#6f1d30!important;
+}
+body[data-active-set="FAMICOM"] .brand-mark{
+  background:#f3ead7!important;
+  color:#8f1f33!important;
+  border-color:#b2243b!important;
+  box-shadow:inset 0 0 0 2px #fffaf0!important;
+}
+body[data-active-set="FAMICOM"] .brand b span{color:#f3ead7!important}
+body[data-active-set="FAMICOM"] .brand small{color:#9ea7b6!important}
+
+body[data-active-set="FAMICOM"] .set-switch{
+  background:#12151c!important;
+  border-color:#6f1d30!important;
+}
+body[data-active-set="FAMICOM"] .set-switch button{color:#b9c1cf!important}
+body[data-active-set="FAMICOM"] .set-switch button.active{
+  background:#f3ead7!important;
+  color:#8d1f33!important;
+  box-shadow:0 0 0 1px #fff inset,0 4px 14px #0007!important;
+}
+
+body[data-active-set="FAMICOM"] .eyebrow,
+body[data-active-set="FAMICOM"] #heroEyebrow{
+  color:#f2dfe3!important;
+}
+body[data-active-set="FAMICOM"] h1{color:#fffaf2!important}
+body[data-active-set="FAMICOM"] .gameeye-sync,
+body[data-active-set="FAMICOM"] #importStatus{
+  color:#e9b5bf!important;
+}
+
+body[data-active-set="FAMICOM"] #search{
+  background:#11141b!important;
+  border-color:#5c2634!important;
+  color:#fff!important;
+}
+body[data-active-set="FAMICOM"] #search:focus{
+  outline-color:#b2243b!important;
+  border-color:#b2243b!important;
+}
+
+body[data-active-set="FAMICOM"] nav button{
+  background:#1b2230!important;
+  color:#fff!important;
+}
+body[data-active-set="FAMICOM"] nav button.active{
+  background:#7f1728!important;
+  outline-color:#f3ead7!important;
+  color:#fffaf2!important;
+}
+
+body[data-active-set="FAMICOM"] .collection-summary{
+  background:#12161d!important;
+  border-color:#5d2635!important;
+}
+body[data-active-set="FAMICOM"] .collection-summary small,
+body[data-active-set="FAMICOM"] .collection-summary .eyebrow{
+  color:#aab4c4!important;
+}
+body[data-active-set="FAMICOM"] .summary-right strong{
+  color:#f3ead7!important;
+}
+body[data-active-set="FAMICOM"] .meter{
+  background:#303846!important;
+}
+body[data-active-set="FAMICOM"] .meter div{
+  background:linear-gradient(90deg,#b2243b,#e15268)!important;
+}
+
+body[data-active-set="FAMICOM"] #huntTools{
+  background:#12161d!important;
+  border-color:#5d2635!important;
+}
+body[data-active-set="FAMICOM"] .rh-random-row small{color:#e8a9b5!important}
+body[data-active-set="FAMICOM"] .rh-random-row b{color:#eef2f8!important}
+body[data-active-set="FAMICOM"] .rh-random-row button,
+body[data-active-set="FAMICOM"] .rh-random-row.owned button{
+  background:linear-gradient(100deg,#f3ead7,#e36f83 55%,#a41f36)!important;
+  color:#241018!important;
+}
+body[data-active-set="FAMICOM"] .rh-bands button{
+  background:#171c25!important;
+  border-color:#394252!important;
+  color:#cdd5e1!important;
+}
+body[data-active-set="FAMICOM"] .rh-bands button.active{
+  background:#7f1728!important;
+  border-color:#f3ead7!important;
+  color:#fffaf2!important;
+}
+
+body[data-active-set="FAMICOM"] .famicom-game{
+  background:#141820!important;
+  border-color:#343d4b!important;
+}
+body[data-active-set="FAMICOM"] .famicom-game:hover{
+  border-color:#6a2b3a!important;
+}
+body[data-active-set="FAMICOM"] .famicom-game.owned{
+  border-color:#2f7650!important;
+}
+
+body[data-active-set="FAMICOM"] .famicom-title-jp,
+body[data-active-set="FAMICOM"] .famicom-title-en{
+  color:#fff!important;
+}
+body[data-active-set="FAMICOM"] .famicom-meta,
+body[data-active-set="FAMICOM"] .famicom-hint{
+  color:#9faabb!important;
+}
+
+body[data-active-set="FAMICOM"] .fc-reconcile details{
+  background:#12161d!important;
+  border-color:#5d2635!important;
+}
+body[data-active-set="FAMICOM"] .fc-reconcile summary{color:#f0b8c3!important}
+body[data-active-set="FAMICOM"] .fc-reconcile-list>div{background:#10141a!important}
+body[data-active-set="FAMICOM"] .fc-reconcile-list b{color:#fff!important}
+body[data-active-set="FAMICOM"] .fc-reconcile-list span,
+body[data-active-set="FAMICOM"] .fc-reconcile p{color:#9fa8b7!important}
+
+body[data-active-set="FAMICOM"] .dossier-dialog,
+body[data-active-set="FAMICOM"] .feature-dialog,
+body[data-active-set="FAMICOM"] .shelf-dialog,
+body[data-active-set="FAMICOM"] .roulette-dialog{
+  background:#10131a!important;
+  border-color:#632638!important;
+}
+body[data-active-set="FAMICOM"] .dossier-head,
+body[data-active-set="FAMICOM"] .feature-head,
+body[data-active-set="FAMICOM"] .ct-modal-head{
+  background:#11141bf4!important;
+  border-bottom-color:#4f2431!important;
+}
+body[data-active-set="FAMICOM"] .fc-dossier-card{
+  border-color:#59303c!important;
+  background:#141820!important;
+}
+body[data-active-set="FAMICOM"] .dossier-block{
+  background:#151a22!important;
+  border-color:#354050!important;
+}
+body[data-active-set="FAMICOM"] .dossier-research-head small,
+body[data-active-set="FAMICOM"] .dossier-block h4{
+  color:#e6aab6!important;
+}
+body[data-active-set="FAMICOM"] .fc-price-block{
+  background:#151a22!important;
+  border-color:#583442!important;
+}
+body[data-active-set="FAMICOM"] .fc-price-big{color:#f3ead7!important}
+body[data-active-set="FAMICOM"] footer{color:#7f8999!important}
+
+
+/* NES skin v2 — ORIGINAL NES CONSOLE
+   Cool shell grays + charcoal vents + Nintendo red. No brown cast. */
+body[data-active-set="NES"]{
+  --red:#c61f26!important;
+  --red2:#8f171c!important;
+  --nes-shell:#c8c8c5;
+  --nes-shell-mid:#a9aaa7;
+  --nes-shell-dark:#6e6f70;
+  --nes-charcoal:#24272c;
+  --nes-black:#0d1014;
+  background:
+    linear-gradient(180deg,#111318 0,#0c0f13 58%,#090b0e 100%)!important;
+  color:#f2f2ef;
+}
+body[data-active-set="NES"] header{
+  background:#101217f4!important;
+  border-bottom:1px solid #5f6063!important;
+  box-shadow:0 1px 0 #b5b5b222 inset;
+}
+body[data-active-set="NES"] .brand-mark{
+  background:linear-gradient(145deg,#d7d7d4,#a9aaa7)!important;
+  color:#b2181f!important;
+  border-color:#6e6f70!important;
+  box-shadow:inset 0 0 0 2px #eeeeeb!important;
+}
+body[data-active-set="NES"] .brand b span{color:#c61f26!important}
+body[data-active-set="NES"] .brand small{color:#a9aaa7!important}
+
+body[data-active-set="NES"] .set-switch{
+  background:#22252a!important;
+  border-color:#686a6d!important;
+  box-shadow:inset 0 0 0 1px #0b0d10,0 2px 8px #0005!important;
+}
+body[data-active-set="NES"] .set-switch button{
+  color:#b8babd!important;
+}
+body[data-active-set="NES"] .set-switch button.active{
+  background:linear-gradient(180deg,#dededb,#c3c3c0)!important;
+  color:#17191c!important;
+  box-shadow:inset 0 1px 0 #fff,0 2px 7px #0006!important;
+}
+
+body[data-active-set="NES"] .eyebrow,
+body[data-active-set="NES"] #heroEyebrow{
+  color:#d63238!important;
+}
+body[data-active-set="NES"] h1{
+  color:#f4f4f1!important;
+  text-shadow:0 1px 0 #000;
+}
+body[data-active-set="NES"] .gameeye-sync,
+body[data-active-set="NES"] #importStatus{
+  color:#aeb2b7!important;
+}
+
+body[data-active-set="NES"] #search{
+  background:#171a1f!important;
+  border-color:#5d6065!important;
+  color:#f4f4f2!important;
+  box-shadow:inset 0 2px 0 #0005!important;
+}
+body[data-active-set="NES"] #search:focus{
+  border-color:#c61f26!important;
+  outline-color:#c61f26!important;
+}
+
+body[data-active-set="NES"] nav button{
+  background:#292d33!important;
+  color:#f0f0ed!important;
+  border-color:#343941!important;
+}
+body[data-active-set="NES"] nav button.active{
+  background:#a9181e!important;
+  color:#fff!important;
+  outline-color:#e1484d!important;
+  border-color:#c61f26!important;
+}
+
+body[data-active-set="NES"] .collection-summary{
+  background:linear-gradient(180deg,#20242a 0,#181b20 100%)!important;
+  border-color:#5b5e63!important;
+  box-shadow:
+    inset 0 4px 0 #b6b6b2,
+    inset 0 5px 0 #737477,
+    0 8px 20px #0002!important;
+}
+body[data-active-set="NES"] .collection-summary small,
+body[data-active-set="NES"] .collection-summary .eyebrow{
+  color:#aeb1b5!important;
+}
+body[data-active-set="NES"] .summary-right strong{
+  color:#e42d34!important;
+}
+body[data-active-set="NES"] .meter{
+  background:#3a3e45!important;
+  box-shadow:inset 0 1px 2px #0009!important;
+}
+body[data-active-set="NES"] .meter div{
+  background:linear-gradient(90deg,#a9161c,#d82b31)!important;
+}
+
+body[data-active-set="NES"] #huntTools{
+  background:linear-gradient(180deg,#20242a,#171a1f)!important;
+  border-color:#5b5e63!important;
+  box-shadow:inset 0 3px 0 #96979455!important;
+}
+body[data-active-set="NES"] .rh-random-row small{color:#df444a!important}
+body[data-active-set="NES"] .rh-random-row b{color:#e8e9e6!important}
+body[data-active-set="NES"] .rh-bands button{
+  background:#292d33!important;
+  border-color:#4e5258!important;
+  color:#d8dadc!important;
+}
+body[data-active-set="NES"] .rh-bands button.active{
+  background:#9f171d!important;
+  border-color:#d33137!important;
+  color:#fff!important;
+}
+
+body[data-active-set="NES"] .game{
+  background:linear-gradient(180deg,#1b1f24,#15181d)!important;
+  border-color:#4d5055!important;
+  box-shadow:inset 0 2px 0 #7b7c7e22!important;
+}
+body[data-active-set="NES"] .game:hover{
+  border-color:#74767a!important;
+}
+body[data-active-set="NES"] .game.owned{
+  border-color:#2f7650!important;
+}
+body[data-active-set="NES"] .game strong{
+  color:#f3f3f0!important;
+}
+body[data-active-set="NES"] .game small,
+body[data-active-set="NES"] .game .muted{
+  color:#aeb3bb!important;
+}
+
+body[data-active-set="NES"] .dossier-dialog,
+body[data-active-set="NES"] .feature-dialog,
+body[data-active-set="NES"] .shelf-dialog,
+body[data-active-set="NES"] .roulette-dialog{
+  background:#101318!important;
+  border-color:#65676b!important;
+}
+body[data-active-set="NES"] .dossier-head,
+body[data-active-set="NES"] .feature-head,
+body[data-active-set="NES"] .ct-modal-head{
+  background:linear-gradient(180deg,#2a2d32,#1b1e23)!important;
+  border-bottom-color:#6a6c6f!important;
+  box-shadow:inset 0 3px 0 #b7b7b333!important;
+}
+body[data-active-set="NES"] .dossier-card,
+body[data-active-set="NES"] .dossier-block,
+body[data-active-set="NES"] .ct-shelf-stat,
+body[data-active-set="NES"] .ct-super,
+body[data-active-set="NES"] .ct-roulette-card{
+  background:#171b20!important;
+  border-color:#4f5359!important;
+}
+body[data-active-set="NES"] .dossier-research-head small,
+body[data-active-set="NES"] .dossier-block h4,
+body[data-active-set="NES"] .ct-section{
+  color:#cf343a!important;
+}
+body[data-active-set="NES"] footer{color:#85898f!important}
+
+
+/* ============================================================
+   REGIONAL HARDWARE IDENTITY PASS
+   NES = toaster hardware / vents / squared industrial labels
+   FAMICOM = ivory shell / burgundy rails / Japanese nameplate
+   ============================================================ */
+.console-identity{
+  position:relative;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:12px;
+  width:min(100%,520px);
+  margin:16px 0 14px;
+  overflow:hidden;
+  user-select:none;
+}
+.console-code,.console-copy strong,.console-copy small{display:block}
+.console-copy{min-width:0}
+.console-detail{display:block;align-self:stretch}
+
+/* NES nameplate: front panel of the original gray toaster */
+body[data-active-set="NES"] .console-identity{
+  min-height:74px;
+  padding:14px 18px 12px;
+  border:1px solid #66686b;
+  border-radius:7px;
+  background:
+    linear-gradient(180deg,#d1d1ce 0 10px,#b7b8b5 10px 13px,#8d8e8e 13px 15px,#c7c7c4 15px 100%);
+  box-shadow:
+    inset 0 1px 0 #f5f5f2,
+    inset 0 -4px 0 #67696b,
+    0 6px 18px #0004;
+  color:#191b1e;
+}
+body[data-active-set="NES"] .console-identity::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:5px;
+  background:#b81d23;
+}
+body[data-active-set="NES"] .console-code{
+  font-family:Arial Black,Arial,sans-serif;
+  font-size:1.55rem;
+  font-weight:900;
+  letter-spacing:-.08em;
+  color:#b51d23;
+  line-height:1;
+}
+body[data-active-set="NES"] .console-copy strong{
+  font-family:Arial Black,Arial,sans-serif;
+  font-size:.82rem;
+  letter-spacing:.17em;
+  color:#282b2e;
+}
+body[data-active-set="NES"] .console-copy small{
+  margin-top:4px;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:.58rem;
+  font-weight:800;
+  letter-spacing:.12em;
+  color:#5b5d60;
+}
+body[data-active-set="NES"] .console-detail{
+  width:72px;
+  border-left:1px solid #8b8c8d;
+  background:
+    repeating-linear-gradient(90deg,#2d3034 0 5px,#17191c 5px 8px);
+  opacity:.92;
+}
+body[data-active-set="NES"] .hero h1{
+  font-family:Arial Black,Arial,sans-serif;
+  letter-spacing:-.025em;
+}
+body[data-active-set="NES"] .browse-bar nav button,
+body[data-active-set="NES"] .collection-summary,
+body[data-active-set="NES"] #huntTools,
+body[data-active-set="NES"] .game{
+  border-radius:8px!important;
+}
+
+/* Famicom nameplate: cream shell + burgundy rails + Japanese faceplate */
+body[data-active-set="FAMICOM"] .console-identity{
+  min-height:76px;
+  padding:12px 16px;
+  border:2px solid #8d2135;
+  border-radius:15px;
+  background:
+    linear-gradient(90deg,#7c1b2e 0 11px,#f2ead8 11px calc(100% - 11px),#7c1b2e calc(100% - 11px));
+  box-shadow:
+    inset 0 0 0 2px #fff7e7,
+    0 6px 18px #0004;
+  color:#68182a;
+}
+body[data-active-set="FAMICOM"] .console-identity::before{
+  content:"";
+  position:absolute;
+  top:8px;right:26px;
+  width:58px;height:8px;
+  border-radius:999px;
+  background:#b4283e;
+  box-shadow:0 18px 0 #d6c8a9;
+  opacity:.95;
+}
+body[data-active-set="FAMICOM"] .console-code{
+  display:grid;
+  place-items:center;
+  width:46px;height:46px;
+  border-radius:10px;
+  background:#8c2034;
+  color:#fff1dc;
+  font-family:Arial Black,Arial,sans-serif;
+  font-size:1.25rem;
+  letter-spacing:-.06em;
+  box-shadow:inset 0 0 0 2px #651426;
+}
+body[data-active-set="FAMICOM"] .console-copy strong{
+  font-family:"Arial Rounded MT Bold","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  font-size:1.28rem;
+  font-weight:900;
+  letter-spacing:.035em;
+  color:#741a2d;
+}
+body[data-active-set="FAMICOM"] .console-copy small{
+  margin-top:3px;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:.58rem;
+  font-weight:900;
+  letter-spacing:.13em;
+  color:#8b3445;
+}
+body[data-active-set="FAMICOM"] .console-detail{
+  width:68px;
+  background:
+    radial-gradient(circle at 16px 50%,#1d2025 0 6px,transparent 7px),
+    radial-gradient(circle at 34px 50%,#1d2025 0 6px,transparent 7px),
+    radial-gradient(circle at 52px 50%,#1d2025 0 6px,transparent 7px);
+  opacity:.95;
+}
+body[data-active-set="FAMICOM"] .hero h1{
+  font-family:"Arial Rounded MT Bold","Trebuchet MS","Yu Gothic",sans-serif;
+  letter-spacing:-.015em;
+}
+body[data-active-set="FAMICOM"] .browse-bar nav button,
+body[data-active-set="FAMICOM"] .collection-summary,
+body[data-active-set="FAMICOM"] #huntTools,
+body[data-active-set="FAMICOM"] .famicom-game{
+  border-radius:15px!important;
+}
+
+/* Make the collection cards themselves carry a subtle system label */
+body[data-active-set="NES"] .collection-summary::after,
+body[data-active-set="FAMICOM"] .collection-summary::after{
+  position:absolute;
+  right:18px;
+  top:10px;
+  font-size:.5rem;
+  font-weight:950;
+  letter-spacing:.16em;
+  opacity:.48;
+  pointer-events:none;
+}
+body[data-active-set="NES"] .collection-summary,
+body[data-active-set="FAMICOM"] .collection-summary{position:relative}
+body[data-active-set="NES"] .collection-summary::after{
+  content:"NES • ENTERTAINMENT SYSTEM";
+  color:#c9c9c6;
+}
+body[data-active-set="FAMICOM"] .collection-summary::after{
+  content:"FC • FAMILY COMPUTER";
+  color:#e8b8c2;
+}
+
+@media(max-width:600px){
+  .console-identity{width:100%;margin:13px 0 12px}
+  body[data-active-set="NES"] .console-detail{width:50px}
+  body[data-active-set="FAMICOM"] .console-detail{width:48px}
+  body[data-active-set="FAMICOM"] .console-identity::before{width:42px;right:18px}
+  body[data-active-set="NES"] .console-copy strong{font-size:.7rem;letter-spacing:.12em}
+  body[data-active-set="FAMICOM"] .console-copy strong{font-size:1.05rem}
+  .console-copy small{font-size:.51rem!important;letter-spacing:.09em!important}
+}
+
+
+/* Real console wordmarks — replace the intentionally fake text treatment. */
+.console-logo-wrap{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  min-width:0;
+}
+.console-logo{
+  display:block;
+  width:auto;
+  max-width:100%;
+  object-fit:contain;
+}
+body[data-active-set="NES"] .console-identity{
+  grid-template-columns:minmax(120px,190px) 1fr auto!important;
+}
+body[data-active-set="NES"] .console-logo{
+  width:150px;
+  max-height:55px;
+}
+body[data-active-set="NES"] .console-copy small{
+  font-size:.58rem!important;
+  color:#505256!important;
+}
+body[data-active-set="FAMICOM"] .console-identity{
+  grid-template-columns:minmax(190px,280px) 1fr auto!important;
+}
+body[data-active-set="FAMICOM"] .console-logo{
+  width:260px;
+  max-height:58px;
+}
+body[data-active-set="FAMICOM"] .console-copy small{
+  color:#792238!important;
+}
+@media(max-width:600px){
+  body[data-active-set="NES"] .console-identity{
+    grid-template-columns:minmax(105px,145px) 1fr 42px!important;
+  }
+  body[data-active-set="NES"] .console-logo{width:130px;max-height:48px}
+  body[data-active-set="FAMICOM"] .console-identity{
+    grid-template-columns:minmax(150px,205px) 1fr 38px!important;
+  }
+  body[data-active-set="FAMICOM"] .console-logo{width:190px;max-height:48px}
+  .console-copy small{font-size:.48rem!important}
+}
+
+
+/* Random is a primary browse tool: keep it above the cards and sticky during long scrolling. */
+#huntTools:not([hidden]){
+  position:sticky;
+  top:calc(68px + env(safe-area-inset-top));
+  z-index:8;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  transition:box-shadow .16s ease,border-color .16s ease;
+}
+#huntTools.is-stuck{
+  box-shadow:0 10px 28px rgba(0,0,0,.72)!important;
+  border-color:#9b2d3f!important;
+}
+.fc-dossier-wishlist{
+  background:#222a36;
+  color:#ffd768;
+  border:1px solid #5d4e25;
+  font-weight:950;
+}
+.fc-dossier-wishlist.active{
+  background:#513b0b;
+  color:#ffe58a;
+  border-color:#9b7916;
+}
+body[data-active-set="FAMICOM"] .fc-dossier-wishlist{
+  background:#181c24;
+  color:#f4d784;
+  border-color:#6d5630;
+}
+body[data-active-set="FAMICOM"] .fc-dossier-wishlist.active{
+  background:#6f1d31;
+  color:#fff1cf;
+  border-color:#e2bd79;
+}
+@media(max-width:600px){
+  #huntTools:not([hidden]){top:calc(62px + env(safe-area-inset-top));margin-top:8px}
+  #huntTools.is-stuck{padding:9px 10px}
+  #huntTools.is-stuck .rh-random-row>div{display:none}
+  #huntTools.is-stuck .rh-random-row button{width:100%;padding:11px}
+  #huntTools.is-stuck .rh-bands{margin-top:7px}
+  #huntTools.is-stuck .rh-bands button{padding:7px 9px}
+}
+
+
+/* Dossier Random toolbar: always reachable while reading long dossiers, including iPhone Safari. */
+.dossier-body .rh-another{
+  position:sticky;
+  z-index:3;
+  display:block;
+  width:100%;
+  margin:0 0 14px;
+  padding:13px 14px;
+  border-radius:12px;
+  box-shadow:0 8px 22px rgba(0,0,0,.55);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+body[data-active-set="NES"] .dossier-body .rh-another{
+  background:linear-gradient(100deg,#d7d7d4,#a9aaab 44%,#bd242a)!important;
+  color:#15171a!important;
+  border:1px solid #707276!important;
+}
+body[data-active-set="FAMICOM"] .dossier-body .rh-another{
+  background:linear-gradient(100deg,#f3ead7,#df7185 55%,#a21f37)!important;
+  color:#201018!important;
+  border:1px solid #7a3142!important;
+}
+@media(max-width:600px){
+  .dossier-body .rh-another{
+    width:100%;
+    margin:0 0 12px;
+    padding:12px 10px;
+    font-size:.86rem;
+  }
+}
