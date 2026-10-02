@@ -3,9 +3,7 @@ const ASSETS=["./index.html","./manifest.webmanifest","./styles.css?v=5","./owne
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE);
-    for(const asset of ASSETS){
-      try{await cache.add(asset)}catch(err){console.warn('Shelf Check cache skip',asset,err)}
-    }
+    await Promise.allSettled(ASSETS.map(asset=>cache.add(asset)));
     await self.skipWaiting();
   })());
 });
